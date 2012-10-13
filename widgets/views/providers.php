@@ -26,7 +26,7 @@
 					class='inactive'
 				<?php endif; ?>
 			>
-				<a id="hybridauth-<?php echo $provider ?>" href="<?php echo $baseUrl?>/default/login/?provider=<?php echo $provider ?>" >
+				<a id="hybridauth-<?php echo $provider ?>" href="<?php echo $this->controller->createUrl("/".$baseUrl) ?>/default/login/?provider=<?php echo $provider ?>" >
 					<img src="<?php echo $assetsUrl ?>/images/<?php echo strtolower($provider)?>.png"/>
 				</a>
 			</li>
