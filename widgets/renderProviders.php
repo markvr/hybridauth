@@ -31,7 +31,6 @@ class renderProviders extends CWidget {
 				$providers[$login->loginProvider]['active']=true;
 			}
 		}
-
 		$this->render('providers', array(
 			'baseUrl'=>$this->config['baseUrl'],
 			'providers' => $providers,
