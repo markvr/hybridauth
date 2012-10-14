@@ -16,7 +16,6 @@
 <?php foreach (Yii::app()->user->getFlashes() as $key => $message): ?>
 	<div class="flash-error"> <?php echo $message ?> </div>
 <?php endforeach; ?>		
-
 <ul class='hybridauth-providerlist'>
 	<?php foreach ($providers as $provider => $settings): ?>
 		<?php if($settings['enabled'] == true): ?> 
