@@ -16,6 +16,7 @@ class DefaultController extends Controller {
 			}
 			$this->_doLogin();
 		} catch (Exception $e) {
+			Yii::log($e->getMessage(),CLogger::LEVEL_ERROR);
 			Yii::app()->user->setFlash('hybridauth-error', "Something went wrong, did you cancel?");
 			$this->redirect(Yii::app()->session['hybridauth-ref'], true);
 		}
@@ -67,12 +68,15 @@ class DefaultController extends Controller {
 					$user->attributes = $_POST['User'];
 
 					if ($user->validate() && $user->save()) {
-						if ($this->module->withYiiUser == true) {
-							$profile = new Profile();
-							$profile->first_name='firstname';
-							$profile->last_name='lastname';
-							$profile->user_id=$user->id;
-							$profile->save();
+						if ($this->module->withYiiUser === true) {
+							$user->profile = new Profile();
+							$user->profile->user_id = $user->id;
+							$profileFields= $user->profile->getFields();						
+							if($profileFields) {
+								if($profileFields['first_name']) $user->profile->first_name='firstname';
+								if($profileFields['last_name']) $user->profile->last_name='lastname';
+							}
+							$user->profile->save();
 						}
 						
 						$identity->id = $user->id;

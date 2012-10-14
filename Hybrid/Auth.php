@@ -212,14 +212,14 @@ class Hybrid_Auth
 	public static function authenticate( $providerId, $params = NULL )
 	{
 		Hybrid_Logger::info( "Enter Hybrid_Auth::authenticate( $providerId )" );
-
 		// if user not connected to $providerId then try setup a new adapter and start the login process for this provider
 		if( ! Hybrid_Auth::storage()->get( "hauth_session.$providerId.is_logged_in" ) ){ 
+
 			Hybrid_Logger::info( "Hybrid_Auth::authenticate( $providerId ), User not connected to the provider. Try to authenticate.." );
 
-			$provider_adapter = Hybrid_Auth::setup( $providerId, $params );
-
+			$provider_adapter = Hybrid_Auth::setup( $providerId, $params );	
 			$provider_adapter->login();
+			
 		}
 
 		// else, then return the adapter instance for the given provider
@@ -351,11 +351,14 @@ class Hybrid_Auth
 	public static function redirect( $url, $mode = "PHP" )
 	{
 		Hybrid_Logger::info( "Enter Hybrid_Auth::redirect( $url, $mode )" );
-
-		if( $mode == "PHP" ){
+		
+		if( $mode === "PHP" ) {
+			if(strpos($url, "http") === false) {
+				$url = Yii::app()->createAbsoluteUrl($url);
+			}
 			header( "Location: $url" ) ;
 		}
-		elseif( $mode == "JS" ){
+		elseif( $mode === "JS" ){
 			echo '<html>';
 			echo '<head>';
 			echo '<script type="text/javascript">';

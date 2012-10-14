@@ -21,6 +21,8 @@ class Hybrid_Endpoint {
 	*/
 	public static function process( $request = NULL )
 	{
+	
+		
 		// Setup request variable
 		Hybrid_Endpoint::$request = $request;
 
@@ -36,6 +38,7 @@ class Hybrid_Endpoint {
 
 			Hybrid_Endpoint::$request = $_REQUEST;
 		}
+
 
 		// If windows_live_channel requested, we return our windows_live WRAP_CHANNEL_URL
 		if ( isset( Hybrid_Endpoint::$request["get"] ) && Hybrid_Endpoint::$request["get"] == "windows_live_channel" ) {
@@ -151,7 +154,6 @@ class Hybrid_Endpoint {
 
 		try {
 			Hybrid_Logger::info( "Endpoint: call adapter [{$provider_id}] loginBegin()" );
-
 			$hauth->adapter->loginBegin();
 		}
 		catch ( Exception $e ) {
