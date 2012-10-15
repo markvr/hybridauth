@@ -57,7 +57,6 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	{
 		// get the login url 
 		$url = $this->api->getLoginUrl( array( 'scope' => $this->scope, 'display' => $this->display, 'redirect_uri' => $this->endpoint ) );
-
 		// redirect to facebook
 		Hybrid_Auth::redirect( $url );
 	}
@@ -74,7 +73,7 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 
 		// try to get the UID of the connected user from fb, should be > 0 
 		if ( ! $this->api->getUser() ){
-			throw new Exception( "Authentification failed! {$this->providerId} returned an invalide user id.", 5 );
+			throw new Exception( "Authentification failed! {$this->providerId} returned an invalid user id.", 5 );
 		}
 
 		// set user as logged in

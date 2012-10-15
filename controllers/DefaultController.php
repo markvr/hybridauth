@@ -13,9 +13,13 @@ class DefaultController extends Controller {
 		try {
 			if (!isset(Yii::app()->session['hybridauth-ref'])) {
 				Yii::app()->session['hybridauth-ref'] = Yii::app()->request->urlReferrer;
+				if ($this->module->withYiiUser === true) {
+					Yii::app()->session['hybridauth-ref'] = Yii::app()->getModule("user")->returnUrl;
+				}
 			}
 			$this->_doLogin();
 		} catch (Exception $e) {
+			Yii::log($e->getMessage(),CLogger::LEVEL_ERROR);
 			Yii::app()->user->setFlash('hybridauth-error', "Something went wrong, did you cancel?");
 			$this->redirect(Yii::app()->session['hybridauth-ref'], true);
 		}
@@ -48,7 +52,12 @@ class DefaultController extends Controller {
 			} else {
 				//they shouldn't get here because they are already logged in AND have a record for
 				// that provider.  Just bounce them on
-				$this->redirect(Yii::app()->user->returnUrl);
+				if ($this->module->withYiiUser === true) {
+					$this->redirect(Yii::app()->getModule("user")->returnUrl);
+				}
+				else {
+					$this->redirect(Yii::app()->user->returnUrl);
+				}
 			}
 		} else if ($identity->errorCode == RemoteUserIdentity::ERROR_USERNAME_INVALID) {
 			// They have authenticated to their provider but we don't have a matching HaLogin entry
@@ -67,12 +76,15 @@ class DefaultController extends Controller {
 					$user->attributes = $_POST['User'];
 
 					if ($user->validate() && $user->save()) {
-						if ($this->module->withYiiUser == true) {
-							$profile = new Profile();
-							$profile->first_name='firstname';
-							$profile->last_name='lastname';
-							$profile->user_id=$user->id;
-							$profile->save();
+						if ($this->module->withYiiUser === true) {
+							$user->profile = new Profile();
+							$user->profile->user_id = $user->id;
+							$profileFields= $user->profile->getFields();						
+							if($profileFields) {
+								if($profileFields['first_name']) $user->profile->first_name='firstname';
+								if($profileFields['last_name']) $user->profile->last_name='lastname';
+							}
+							$user->profile->save();
 						}
 						
 						$identity->id = $user->id;
@@ -112,7 +124,13 @@ class DefaultController extends Controller {
 	
 	private function _loginUser($identity) {
 		Yii::app()->user->login($identity, 0);
-		$this->redirect(Yii::app()->user->returnUrl);
+		
+		if ($this->module->withYiiUser === true) {
+			$this->redirect(Yii::app()->getModule("user")->returnUrl);
+		}
+		else {
+			$this->redirect(Yii::app()->user->returnUrl);
+		}
 	}
 
 	/** 

@@ -24,6 +24,7 @@ class RemoteUserIdentity extends CBaseUserIdentity {
 	 * @return boolean whether authentication succeeds.
 	 */
 	public function authenticate() {
+	
 		if (strtolower($this->loginProvider) == 'openid') {
 			if (!isset($_GET['openid-identity'])) {
 				throw new Exception('You chose OpenID but didn\'t provide an OpenID identifier');
@@ -33,8 +34,10 @@ class RemoteUserIdentity extends CBaseUserIdentity {
 		} else {
 			$params = array();
 		}
-		
+
 		$adapter = $this->_hybridAuth->authenticate($this->loginProvider,$params);
+	
+		
 		if ($adapter->isUserConnected()) {
 			$this->_adapter = $adapter;
 			$this->loginProviderIdentifier = $this->_adapter->getUserProfile()->identifier;
