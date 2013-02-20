@@ -2,6 +2,7 @@
 
 class HybridauthModule extends CWebModule {
 
+	public $tableName = "x_logins";
 	public $baseUrl;
 	public $providers;
 	public $withYiiUser;

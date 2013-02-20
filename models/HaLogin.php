@@ -28,7 +28,26 @@ class HaLogin extends CActiveRecord
      */
     public function tableName()
     {
-        return 'ha_logins';
+        $stateKey = "hybridauthmodule.tableName";
+		$tableName = "";
+
+		// Get module Id
+		if(Yii::app()->user->hasState($stateKey))
+		{
+			$tableName = Yii::app()->user->getState($stateKey);
+		} else {
+			$tmp = Yii::app()->getModules();
+			foreach($tmp as $key=>$value)
+			{
+				if(stripos($value['class'], "hybridauthmodule") !== false)
+				{
+					$tableName = Yii::app()->getModule($key)->tableName;
+					Yii::app()->user->setState($stateKey, $tableName);
+				}
+			}
+		}
+
+		return $tableName;
     }
 
     /**
